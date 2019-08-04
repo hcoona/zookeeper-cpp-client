@@ -1,0 +1,7 @@
+cc_library(
+    name = "test",
+    srcs = ["main.cc"],
+    deps = [
+        "@org_apache_zookeeper//:libzookeeper_mt",
+    ],
+)
