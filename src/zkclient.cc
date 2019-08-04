@@ -7,14 +7,37 @@
 namespace hcoona {
 namespace zookeeper {
 
-ZClient::ZClient() = default;
+std::string to_string(ErrorCode error_code) {
+  return zerror(static_cast<int>(error_code));
+}
 
-ZClient::ZClient(ZClient&& other) {
+// Defined in zookeeper.c
+std::string to_string(State state) {
+  switch (state) {
+    case State::Closed:
+      return "ZOO_CLOSED_STATE";
+    case State::Connecting:
+      return "ZOO_CONNECTING_STATE";
+    case State::Associating:
+      return "ZOO_ASSOCIATING_STATE";
+    case State::Connected:
+      return "ZOO_CONNECTED_STATE";
+    case State::ExpiredSession:
+      return "ZOO_EXPIRED_SESSION_STATE";
+    case State::AuthFailed:
+      return "ZOO_AUTH_FAILED_STATE";
+  }
+  return "INVALID_STATE";
+}
+
+Client::Client() = default;
+
+Client::Client(Client&& other) {
   handle_ = other.handle_;
   other.handle_ = nullptr;
 }
 
-ZClient& ZClient::operator=(ZClient&& other) {
+Client& Client::operator=(Client&& other) {
   if (this != &other) {
     Close();
 
@@ -24,12 +47,13 @@ ZClient& ZClient::operator=(ZClient&& other) {
   return *this;
 }
 
-ZClient::~ZClient() { Close(); }
+Client::~Client() { Close(); }
 
-void ZClient::Close() {
+void Client::Close() {
   if (handle_) {
-    ZErrorCode error_code = static_cast<ZErrorCode>(
+    ErrorCode error_code = static_cast<ErrorCode>(
         zookeeper_close(reinterpret_cast<zhandle_t*>(handle_)));
+    // TODO: Log it. LOG(ERROR) << to_string(zerror)
   }
 }
 
