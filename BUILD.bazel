@@ -3,3 +3,11 @@ load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
 buildifier(
     name = "buildifier",
 )
+
+cc_library(
+    name = "zkclient",
+    srcs = ["src/zkclient.cc"],
+    hdrs = ["include/zkclient.h"],
+    strip_include_prefix = "include",
+    deps = ["@org_apache_zookeeper//:libzookeeper_mt"],
+)
