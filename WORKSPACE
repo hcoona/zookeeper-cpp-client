@@ -31,22 +31,29 @@ go_register_toolchains()
 #####
 # Protobuf & Grpc
 #####
-# Required by Protobuf
-# TODO: rename to com_github_madler_zlib & Patch Protobuf
+# Required by Protobuf & Grpc (Patched them to use @com_github_madler_zlib//:zlib)
 http_archive(
-    name = "zlib",
+    name = "com_github_madler_zlib",
     build_file = "//third_party:zlib.BUILD",
     sha256 = "c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1",
     strip_prefix = "zlib-1.2.11",
     urls = ["https://zlib.net/zlib-1.2.11.tar.gz"],
 )
 
+# proto_library, cc_proto_library, and java_proto_library rules implicitly
+# depend on @com_google_protobuf for protoc and proto runtimes.
 http_archive(
     name = "com_google_protobuf",
-    sha256 = "8eb5ca331ab8ca0da2baea7fc0607d86c46c80845deca57109a5d637ccb93bb4",
-    strip_prefix = "protobuf-3.9.0",
-    urls = ["https://github.com/google/protobuf/archive/v3.9.0.zip"],
+    patch_args = ["-p1"],
+    patches = ["//third_party/protobuf:build-with-com_github_madler_zlib.patch"],
+    sha256 = "c90d9e13564c0af85fd2912545ee47b57deded6e5a97de80395b6d2d9be64854",
+    strip_prefix = "protobuf-3.9.1",
+    urls = ["https://github.com/google/protobuf/archive/v3.9.1.zip"],
 )
+
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
 
 #####
 # Common Dependencies
