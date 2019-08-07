@@ -63,19 +63,11 @@ cc_library(
         ],
         "//conditions:default": [],
     }),
-    deps = select({
-        "@bazel_tools//src/conditions:windows": [
-            "@//third_party/zookeeper-client-c:config",
-        ],
-        "//conditions:default": [
-            ":config"
-        ],
-    }),
     defines = [
         "THREADED",
     ] + select({
         "@bazel_tools//src/conditions:windows": [
-        "WIN32"
+            "WIN32",
         ],
         "//conditions:default": [],
     }),
@@ -91,4 +83,12 @@ cc_library(
     ],
     linkstatic = True,
     visibility = ["//visibility:public"],
+    deps = select({
+        "@bazel_tools//src/conditions:windows": [
+            "@//third_party/zookeeper-client-c:config",
+        ],
+        "//conditions:default": [
+            ":config",
+        ],
+    }),
 )

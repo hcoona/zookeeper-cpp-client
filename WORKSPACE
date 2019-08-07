@@ -56,7 +56,11 @@ http_archive(
     build_file = "//third_party/zookeeper-client-c:zookeeper.BUILD",
     sha256 = "b14f7a0fece8bd34c7fffa46039e563ac5367607c612517aa7bd37306afbd1cd",
     strip_prefix = "zookeeper-3.4.14/zookeeper-client/zookeeper-client-c",
-    urls = ["https://mirrors.tuna.tsinghua.edu.cn/apache/zookeeper/zookeeper-3.4.14/zookeeper-3.4.14.tar.gz"],
+    urls = [
+        "https://mirrors.tuna.tsinghua.edu.cn/apache/zookeeper/zookeeper-3.4.14/zookeeper-3.4.14.tar.gz",
+        "https://www-eu.apache.org/dist/zookeeper/zookeeper-3.4.14/zookeeper-3.4.14.tar.gz",
+        "https://archive.apache.org/dist/zookeeper/zookeeper-3.4.14/zookeeper-3.4.14.tar.gz",
+    ],
 )
 
 #####
