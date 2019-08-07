@@ -14,17 +14,17 @@ std::string to_string(ErrorCode error_code) {
 // Defined in zookeeper.c
 std::string to_string(State state) {
   switch (state) {
-    case State::Closed:
+    case State::kClosed:
       return "ZOO_CLOSED_STATE";
-    case State::Connecting:
+    case State::kConnecting:
       return "ZOO_CONNECTING_STATE";
-    case State::Associating:
+    case State::kAssociating:
       return "ZOO_ASSOCIATING_STATE";
-    case State::Connected:
+    case State::kConnected:
       return "ZOO_CONNECTED_STATE";
-    case State::ExpiredSession:
+    case State::kExpiredSession:
       return "ZOO_EXPIRED_SESSION_STATE";
-    case State::AuthFailed:
+    case State::kAuthFailed:
       return "ZOO_AUTH_FAILED_STATE";
   }
   return "INVALID_STATE";
