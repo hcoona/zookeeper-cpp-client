@@ -11,3 +11,9 @@ cc_library(
     strip_include_prefix = "include",
     deps = ["@org_apache_zookeeper//:libzookeeper_mt"],
 )
+
+cc_binary(
+    name = "test_main",
+    srcs = ["test/main.cc"],
+    deps = [":zkclient"],
+)

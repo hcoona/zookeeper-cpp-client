@@ -6,6 +6,9 @@ namespace hcoona {
 namespace zookeeper {
 
 // Defined in zookeeper.h
+enum class LogLevel { kError = 1, kWarning = 2, kInformation = 3, kDebug = 4 };
+
+// Defined in zookeeper.h
 enum class ErrorCode : int {
   kOk = 0,
   kSystemError = -1,
@@ -43,12 +46,25 @@ enum class State : int {
   kConnected = 3
 };
 
+// Defined in zookeeper.h
+enum class WatchType : int {
+  kError = 0,
+  kCreated = 1,
+  kDeleted = 2,
+  kChanged = 3,
+  kChild = 4,
+  kSession = -1,
+  kNotWatching = -2,
+};
+
 // Defined in zookeeper.c
 enum class CreateFlag : int { kEphemeral = 1 << 0, kSequence = 1 << 1 };
 
 std::string to_string(ErrorCode error_code);
 
 std::string to_string(State state);
+
+std::string to_string(WatchType type);
 
 class Client {
  public:
@@ -60,12 +76,16 @@ class Client {
   Client& operator=(Client&& other);
   virtual ~Client();
 
+  static void SetDebugLevel(LogLevel logLevel);
+  static void EnableDeterministicConnectOrder(bool yesOrNo);
+
   // Milliseconds according to calculate_interval in zookeeper.c
   int receive_timeout_ms() const;
   State state() const;
 
  private:
   void Close();
+  void Callback(WatchType type, State state, const char* path);
 
   void* handle_;
 };
