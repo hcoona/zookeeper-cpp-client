@@ -47,7 +47,7 @@ enum class State : int {
 };
 
 // Defined in zookeeper.h
-enum class WatchType : int {
+enum class WatchEventType : int {
   kError = 0,
   kCreated = 1,
   kDeleted = 2,
@@ -64,7 +64,7 @@ std::string to_string(ErrorCode error_code);
 
 std::string to_string(State state);
 
-std::string to_string(WatchType type);
+std::string to_string(WatchEventType type);
 
 class Client {
  public:
@@ -85,7 +85,7 @@ class Client {
 
  private:
   void Close();
-  void Callback(WatchType type, State state, const char* path);
+  void Callback(WatchEventType type, State state, const char* path);
 
   void* handle_;
 };

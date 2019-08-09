@@ -35,21 +35,21 @@ std::string to_string(State state) {
 }
 
 // Defined in zookeeper.c
-std::string to_string(WatchType type) {
+std::string to_string(WatchEventType type) {
   switch (type) {
-    case WatchType::kError:
+    case WatchEventType::kError:
       return "ZOO_ERROR_EVENT";
-    case WatchType::kCreated:
+    case WatchEventType::kCreated:
       return "ZOO_CREATED_EVENT";
-    case WatchType::kDeleted:
+    case WatchEventType::kDeleted:
       return "ZOO_DELETED_EVENT";
-    case WatchType::kChanged:
+    case WatchEventType::kChanged:
       return "ZOO_CHANGED_EVENT";
-    case WatchType::kChild:
+    case WatchEventType::kChild:
       return "ZOO_CHILD_EVENT";
-    case WatchType::kSession:
+    case WatchEventType::kSession:
       return "ZOO_SESSION_EVENT";
-    case WatchType::kNotWatching:
+    case WatchEventType::kNotWatching:
       return "ZOO_NOTWATCHING_EVENT";
   }
   return "INVALID_EVENT";
@@ -68,7 +68,7 @@ Client::Client(const std::string& host) {
       +[](zhandle_t* zh, int type, int state, const char* path,
           void* watcherCtx) {
         Client* client = reinterpret_cast<Client*>(watcherCtx);
-        WatchType watch_type = static_cast<WatchType>(type);
+        WatchEventType watch_type = static_cast<WatchEventType>(type);
         State zk_state = static_cast<State>(state);
 
         client->Callback(watch_type, zk_state, path);
@@ -114,15 +114,21 @@ void Client::Close() {
     ErrorCode error_code =
         static_cast<ErrorCode>(zookeeper_close(to_zoo(handle_)));
     if (error_code != ErrorCode::kOk) {
-      LOG_ERROR(("Failed to close zookeeper session, handle=%x, error_code=%s",
+      LOG_ERROR(("[handle=%x] Failed to close zookeeper session, error_code=%s",
                  handle_, to_string(error_code).c_str()));
     }
   }
 }
 
-void Client::Callback(WatchType type, State state, const char* path) {
-  LOG_DEBUG(("handle=%x,type=%s,state=%s", handle_, to_string(type).c_str(),
-             to_string(state).c_str()));
+void Client::Callback(WatchEventType type, State state, const char* path) {
+  LOG_DEBUG(("[handle=%x] type=%s, state=%s, path=%s", handle_,
+             to_string(type).c_str(), to_string(state).c_str(), path));
+
+  if (type == WatchEventType::kSession) {
+    LOG_WARN(("[handle=%x] Session state changed to %s", handle_,
+              to_string(state).c_str()));
+    return;
+  }
 }
 
 }  // namespace zookeeper
