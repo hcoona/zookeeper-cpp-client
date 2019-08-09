@@ -30,6 +30,10 @@ std::string to_string(State state) {
   return "INVALID_STATE";
 }
 
+static zhandle_t* to_zoo(void* handle) {
+  return reinterpret_cast<zhandle_t*>(handle);
+}
+
 Client::Client() = default;
 
 Client::Client(Client&& other) {
@@ -49,11 +53,19 @@ Client& Client::operator=(Client&& other) {
 
 Client::~Client() { Close(); }
 
+int Client::receive_timeout_ms() const {
+  return zoo_recv_timeout(to_zoo(handle_));
+}
+
+State Client::state() const {
+  return static_cast<State>(zoo_state(to_zoo(handle_)));
+}
+
 void Client::Close() {
   if (handle_) {
-    ErrorCode error_code = static_cast<ErrorCode>(
-        zookeeper_close(reinterpret_cast<zhandle_t*>(handle_)));
-    // TODO: Log it. LOG(ERROR) << to_string(zerror)
+    ErrorCode error_code =
+        static_cast<ErrorCode>(zookeeper_close(to_zoo(handle_)));
+    (void)error_code;  // TODO: Log it. LOG(ERROR) << to_string(zerror)
   }
 }
 

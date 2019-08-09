@@ -60,6 +60,10 @@ class Client {
   Client& operator=(Client&& other);
   virtual ~Client();
 
+  // Milliseconds according to calculate_interval in zookeeper.c
+  int receive_timeout_ms() const;
+  State state() const;
+
  private:
   void Close();
 
