@@ -76,8 +76,8 @@ class Client {
   Client& operator=(Client&& other);
   virtual ~Client();
 
-  static void SetDebugLevel(LogLevel logLevel);
-  static void EnableDeterministicConnectOrder(bool yesOrNo);
+  static void SetDebugLevel(LogLevel log_level);
+  static void EnableDeterministicConnectOrder(bool yes_or_no);
 
   // Milliseconds according to calculate_interval in zookeeper.c
   int receive_timeout_ms() const;

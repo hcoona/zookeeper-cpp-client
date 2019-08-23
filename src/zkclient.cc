@@ -93,12 +93,12 @@ Client& Client::operator=(Client&& other) {
 
 Client::~Client() { Close(); }
 
-void Client::SetDebugLevel(LogLevel logLevel) {
-  zoo_set_debug_level(static_cast<ZooLogLevel>(logLevel));
+void Client::SetDebugLevel(LogLevel log_level) {
+  zoo_set_debug_level(static_cast<ZooLogLevel>(log_level));
 }
 
-void Client::EnableDeterministicConnectOrder(bool yesOrNo) {
-  zoo_deterministic_conn_order(yesOrNo);
+void Client::EnableDeterministicConnectOrder(bool yes_or_no) {
+  zoo_deterministic_conn_order(yes_or_no);
 }
 
 int Client::receive_timeout_ms() const {
