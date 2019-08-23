@@ -9,6 +9,8 @@
 #endif  // C++17
 
 #include "gsl/gsl"
+// TODO(hcoona): Do not expose `struct ACL` in `zookeeper.jute.h`.
+#include "zookeeper.jute.h"  // NOLINT
 
 namespace hcoona {
 namespace zookeeper {
@@ -97,9 +99,10 @@ class Client {
   int receive_timeout_ms() const;
   State state() const;
 
-  ErrorCode Create(string_view path, gsl::span<const gsl::byte> value,
-                   const std::vector<struct ACL>& acl, int flags,
-                   std::string* created_path);
+  // TODO(hcoona): Do not expose `struct ACL` in `zookeeper.jute.h`.
+  ErrorCode CreateSync(string_view path, gsl::span<const gsl::byte> value,
+                       gsl::span<ACL> acl, CreateFlag flags,
+                       std::string* created_path);
 
  private:
   void Close();

@@ -1,9 +1,9 @@
-#include "zkclient.h"
+#include "zkclient/zkclient.h"
 
 #include <utility>
 
-#include "zookeeper.h"
-#include "zookeeper_log.h"
+#include "zookeeper.h"      // NOLINT
+#include "zookeeper_log.h"  // NOLINT
 
 namespace hcoona {
 namespace zookeeper {
@@ -109,10 +109,16 @@ State Client::state() const {
   return static_cast<State>(zoo_state(to_zoo(handle_)));
 }
 
-ErrorCode Client::Create(string_view path, gsl::span<const gsl::byte> value,
-                         const std::vector<struct ACL>& acl, int flags,
-                         std::string* created_path) {
-  return static_cast<ErrorCode>(to_zoo(handle_), path.data(), value.data())
+ErrorCode Client::CreateSync(string_view path, gsl::span<const gsl::byte> value,
+                             gsl::span<ACL> acl, CreateFlag flags,
+                             std::string* created_path) {
+  struct ACL_vector z_acls {
+    gsl::narrow_cast<int>(acl.size()), acl.data()
+  };
+  return static_cast<ErrorCode>(zoo_create(
+      to_zoo(handle_), path.data(), reinterpret_cast<const char*>(value.data()),
+      value.size_bytes(), &z_acls, static_cast<int>(flags),
+      const_cast<char*>(created_path->data()), created_path->size()));
 }
 
 void Client::Close() {
