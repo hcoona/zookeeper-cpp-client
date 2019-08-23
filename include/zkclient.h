@@ -8,6 +8,8 @@
 #include "absl/strings/string_view.h"
 #endif  // C++17
 
+#include "gsl/gsl"
+
 namespace hcoona {
 namespace zookeeper {
 
@@ -95,7 +97,9 @@ class Client {
   int receive_timeout_ms() const;
   State state() const;
 
-  ErrorCode Create(absl::string_view path);
+  ErrorCode Create(string_view path, gsl::span<const gsl::byte> value,
+                   const std::vector<struct ACL>& acl, int flags,
+                   std::string* created_path);
 
  private:
   void Close();

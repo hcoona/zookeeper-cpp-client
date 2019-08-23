@@ -109,6 +109,12 @@ State Client::state() const {
   return static_cast<State>(zoo_state(to_zoo(handle_)));
 }
 
+ErrorCode Client::Create(string_view path, gsl::span<const gsl::byte> value,
+                         const std::vector<struct ACL>& acl, int flags,
+                         std::string* created_path) {
+  return static_cast<ErrorCode>(to_zoo(handle_), path.data(), value.data())
+}
+
 void Client::Close() {
   if (handle_) {
     ErrorCode error_code =
