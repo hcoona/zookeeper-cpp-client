@@ -38,8 +38,14 @@ cc_library(
         "src/zookeeper.c",
         "src/hashtable/hashtable.c",
         "src/hashtable/hashtable_itr.c",
+        "src/zk_adaptor.h",
+        "src/zk_hashtable.h",
+        "src/hashtable/hashtable.h",
+        "src/hashtable/hashtable_itr.h",
+        "src/hashtable/hashtable_private.h",
     ] + select({
         "@bazel_tools//src/conditions:windows": [
+            "src/winport.h",
             "src/winport.c",
         ],
         "//conditions:default": [],
@@ -51,20 +57,15 @@ cc_library(
         "include/zookeeper.h",
         "include/zookeeper_log.h",
         "include/zookeeper_version.h",
-        "src/zk_adaptor.h",
-        "src/zk_hashtable.h",
-        "src/hashtable/hashtable.h",
-        "src/hashtable/hashtable_itr.h",
-        "src/hashtable/hashtable_private.h",
     ] + select({
         "@bazel_tools//src/conditions:windows": [
             "include/winconfig.h",
-            "src/winport.h",
         ],
         "//conditions:default": [],
     }),
     defines = [
         "THREADED",
+        "USE_STATIC_LIB",
     ] + select({
         "@bazel_tools//src/conditions:windows": [
             "WIN32",
@@ -79,7 +80,7 @@ cc_library(
         "src/hashtable",
     ],
     linkopts = select({
-        "@bazel_tools//src/conditions:windows": [],
+        "@bazel_tools//src/conditions:windows": ["-DEFAULTLIB:ws2_32.lib"],
         "//conditions:default": ["-lpthread"],
     }),
     linkstatic = True,
