@@ -78,9 +78,10 @@ cc_library(
         "src",
         "src/hashtable",
     ],
-    linkopts = [
-        "-lpthread",
-    ],
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [],
+        "//conditions:default": ["-lpthread"],
+    }),
     linkstatic = True,
     visibility = ["//visibility:public"],
     deps = select({

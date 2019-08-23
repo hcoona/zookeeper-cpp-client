@@ -9,7 +9,11 @@ cc_library(
     srcs = ["src/zkclient.cc"],
     hdrs = ["include/zkclient.h"],
     strip_include_prefix = "include",
-    deps = ["@org_apache_zookeeper//:libzookeeper_mt"],
+    deps = [
+        "@com_github_microsoft_gsl//:gsl",
+        "@com_google_absl//absl/strings",
+        "@org_apache_zookeeper//:libzookeeper_mt",
+    ],
 )
 
 cc_binary(

@@ -40,6 +40,14 @@ http_archive(
     urls = ["https://zlib.net/zlib-1.2.11.tar.gz"],
 )
 
+# abseil, required by Grpc.
+http_archive(
+    name = "com_google_absl",
+    sha256 = "15e1afcb57de3855941927cb0fb1c7cd6194b38a8d2f297e9a8e4e66ff66aa3d",
+    strip_prefix = "abseil-cpp-67222ffc4c83d918ce8395aa61769eeb77df4c4d",
+    urls = ["https://github.com/abseil/abseil-cpp/archive/67222ffc4c83d918ce8395aa61769eeb77df4c4d.tar.gz"],  # 2019-08-06
+)
+
 # proto_library, cc_proto_library, and java_proto_library rules implicitly
 # depend on @com_google_protobuf for protoc and proto runtimes.
 http_archive(
@@ -70,6 +78,15 @@ http_archive(
     ],
 )
 
+# GSL repository
+http_archive(
+    name = "com_github_microsoft_gsl",
+    build_file = "//third_party:gsl.BUILD",
+    sha256 = "b991e8b347b763f4b0e521b9687cdf8aebd6c5a831a6b6435b33fc11007e2c7f",
+    strip_prefix = "GSL-1212beae777dba02c230ece8c0c0ec12790047ea",
+    urls = ["https://github.com/microsoft/GSL/archive/1212beae777dba02c230ece8c0c0ec12790047ea.zip"],  # 2019-06-13
+)
+
 #####
 # Commandline Tools
 #####
@@ -83,3 +100,13 @@ http_archive(
 load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")
 
 buildifier_dependencies()
+
+http_archive(
+    name = "cpplint",
+    build_file = "//third_party:cpplint.BUILD",
+    sha256 = "05f879aab5a04307e916e32afb547567d8a44149ddc2f91bf846ce2650ce6d7d",
+    strip_prefix = "cpplint-1.4.4",
+    urls = [
+        "https://github.com/cpplint/cpplint/archive/1.4.4.tar.gz",
+    ],
+)

@@ -62,9 +62,9 @@ static zhandle_t* to_zoo(void* handle) {
 Client::Client() = default;
 
 // TODO(hcoona): Persist & Reload client_id from file.
-Client::Client(const std::string& host) {
+Client::Client(string_view host) {
   handle_ = zookeeper_init(
-      host.c_str(),
+      host.data(),
       +[](zhandle_t* zh, int type, int state, const char* path,
           void* watcherCtx) {
         Client* client = reinterpret_cast<Client*>(watcherCtx);
@@ -115,18 +115,18 @@ void Client::Close() {
         static_cast<ErrorCode>(zookeeper_close(to_zoo(handle_)));
     if (error_code != ErrorCode::kOk) {
       LOG_ERROR(("[handle=%x] Failed to close zookeeper session, error_code=%s",
-                 handle_, to_string(error_code).c_str()));
+                 handle_, to_string(error_code).data()));
     }
   }
 }
 
-void Client::Callback(WatchEventType type, State state, const char* path) {
+void Client::Callback(WatchEventType type, State state, string_view path) {
   LOG_DEBUG(("[handle=%x] type=%s, state=%s, path=%s", handle_,
-             to_string(type).c_str(), to_string(state).c_str(), path));
+             to_string(type).data(), to_string(state).data(), path.data()));
 
   if (type == WatchEventType::kSession) {
     LOG_WARN(("[handle=%x] Session state changed to %s", handle_,
-              to_string(state).c_str()));
+              to_string(state).data()));
     return;
   }
 }

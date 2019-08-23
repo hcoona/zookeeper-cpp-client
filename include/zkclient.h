@@ -2,8 +2,20 @@
 
 #include <string>
 
+#if __cplusplus > 201703L
+#include <string_view>
+#else
+#include "absl/strings/string_view.h"
+#endif  // C++17
+
 namespace hcoona {
 namespace zookeeper {
+
+#if __cplusplus > 201703L
+using std::string_view;
+#else
+using absl::string_view;
+#endif  // C++17
 
 // Defined in zookeeper.h
 enum class LogLevel { kError = 1, kWarning = 2, kInformation = 3, kDebug = 4 };
@@ -69,7 +81,7 @@ std::string to_string(WatchEventType type);
 class Client {
  public:
   Client();
-  explicit Client(const std::string& host);
+  explicit Client(string_view host);
   Client(const Client&) = delete;
   Client& operator=(const Client&) = delete;
   Client(Client&&);
@@ -83,9 +95,11 @@ class Client {
   int receive_timeout_ms() const;
   State state() const;
 
+  ErrorCode Create(absl::string_view path);
+
  private:
   void Close();
-  void Callback(WatchEventType type, State state, const char* path);
+  void Callback(WatchEventType type, State state, string_view path);
 
   void* handle_;
 };
