@@ -11,6 +11,10 @@ cc_library(
         "include/gsl/span",
         "include/gsl/string_span",
     ],
+    copts = select({
+        "@bazel_tools//src/conditions:windows": ["/std:c++14"],
+        "//conditions:default": ["-std=c++14"],
+    }),
     strip_include_prefix = "./include",
     visibility = ["//visibility:public"],
 )

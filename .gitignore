@@ -144,3 +144,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/vim,c++,bazel,linux,macos,windows,visualstudiocode
+
+# Generated compile_commands.json
+/compile_commands.json

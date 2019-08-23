@@ -88,6 +88,24 @@ http_archive(
 )
 
 #####
+# Go Dependencies
+#####
+
+# Generate BUILD files for Go project.
+http_archive(
+    name = "bazel_gazelle",
+    sha256 = "be9296bfd64882e3c08e3283c58fcb461fa6dd3c171764fcc4cf322f60615a9b",
+    urls = [
+        "https://storage.googleapis.com/bazel-mirror/github.com/bazelbuild/bazel-gazelle/releases/download/0.18.1/bazel-gazelle-0.18.1.tar.gz",
+        "https://github.com/bazelbuild/bazel-gazelle/releases/download/0.18.1/bazel-gazelle-0.18.1.tar.gz",
+    ],
+)
+
+load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
+
+gazelle_dependencies()
+
+#####
 # Commandline Tools
 #####
 http_archive(
@@ -110,3 +128,16 @@ http_archive(
         "https://github.com/cpplint/cpplint/archive/1.4.4.tar.gz",
     ],
 )
+
+# Generate compilation database for C++.
+# TODO(zhangshuai.ds): Build kythe in a lighter way.
+http_archive(
+    name = "io_kythe",
+    sha256 = "4856b9b974ac771e5d8be9f14e7d98f71760ce85c9f20321a94c7ea94d4ab2ee",
+    strip_prefix = "kythe-b366059660304a27ae7775055ca168a4ecb55a72",
+    urls = ["https://github.com/kythe/kythe/archive/b366059660304a27ae7775055ca168a4ecb55a72.zip"],
+)
+
+load("@io_kythe//:external.bzl", "kythe_dependencies")
+
+kythe_dependencies()
