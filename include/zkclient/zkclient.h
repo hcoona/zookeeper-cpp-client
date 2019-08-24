@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include "gsl/gsl"
 #include "zkclient/zkadapter.h"
@@ -24,10 +25,13 @@ class Client {
   int receive_timeout_ms() const;
   State state() const;
 
-  // TODO(hcoona): Do not expose `struct ACL` in `zookeeper.jute.h`.
   ErrorCode CreateSync(string_view path, gsl::span<const gsl::byte> value,
                        gsl::span<Acl> acl, CreateFlag flags,
                        std::string* created_path);
+
+  ErrorCode CreateAsync(string_view path, gsl::span<const gsl::byte> value,
+                        gsl::span<Acl> acl, CreateFlag flags,
+                        std::function<void(ErrorCode, std::string)> callback);
 
  private:
   void Close();

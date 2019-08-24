@@ -14,6 +14,12 @@ static zhandle_t* to_zoo(void* handle) {
   return reinterpret_cast<zhandle_t*>(handle);
 }
 
+template <class T>
+class Holder {
+ public:
+  T t_;
+};
+
 Client::Client() = default;
 
 // TODO(hcoona): Persist & Reload client_id from file.
@@ -74,6 +80,35 @@ ErrorCode Client::CreateSync(string_view path, gsl::span<const gsl::byte> value,
       to_zoo(handle_), path.data(), reinterpret_cast<const char*>(value.data()),
       value.size_bytes(), &z_acls, static_cast<int>(flags),
       const_cast<char*>(created_path->data()), created_path->size()));
+}
+
+ErrorCode Client::CreateAsync(
+    string_view path, gsl::span<const gsl::byte> value, gsl::span<Acl> acl,
+    CreateFlag flags, std::function<void(ErrorCode, std::string)> callback) {
+  auto holder = new Holder<std::function<void(ErrorCode, std::string)>>;
+  holder->t_ = std::move(callback);
+
+  struct ACL_vector z_acls {
+    gsl::narrow_cast<int>(acl.size()), reinterpret_cast<::ACL*>(acl.data())
+  };
+  ErrorCode error_code = static_cast<ErrorCode>(zoo_acreate(
+      to_zoo(handle_), path.data(), reinterpret_cast<const char*>(value.data()),
+      value.size_bytes(), &z_acls, static_cast<int>(flags),
+      [](int rc, const char* value, const void* data) {
+        auto holder =
+            (Holder<std::function<void(ErrorCode, std::string)>>*)data;
+        std::function<void(ErrorCode, std::string)> callback =
+            std::move(holder->t_);
+        delete holder;
+
+        callback(static_cast<ErrorCode>(rc), value);
+      },
+      holder));
+  if (error_code != ErrorCode::kOk) {
+    delete holder;
+  }
+
+  return error_code;
 }
 
 void Client::Close() {
