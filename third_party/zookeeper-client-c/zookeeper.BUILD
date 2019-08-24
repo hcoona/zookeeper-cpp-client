@@ -68,6 +68,7 @@ cc_library(
         "USE_STATIC_LIB",
     ] + select({
         "@bazel_tools//src/conditions:windows": [
+            "_WINDOWS",
             "WIN32",
         ],
         "//conditions:default": [],

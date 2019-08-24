@@ -9,8 +9,9 @@
 #endif  // C++17
 
 #include "gsl/gsl"
-// TODO(hcoona): Do not expose `struct ACL` in `zookeeper.jute.h`.
-#include "zookeeper.jute.h"  // NOLINT
+// TODO(hcoona): Do not expose `struct ACL` (ZKACL on Windows) in
+// `zookeeper.jute.h`.
+#include "zookeeper.h"  // NOLINT
 
 namespace hcoona {
 namespace zookeeper {

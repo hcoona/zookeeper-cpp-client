@@ -40,12 +40,20 @@ http_archive(
     urls = ["https://zlib.net/zlib-1.2.11.tar.gz"],
 )
 
-# abseil, required by Grpc.
+# abseil, required by Grpc & kythe.
 http_archive(
     name = "com_google_absl",
     sha256 = "15e1afcb57de3855941927cb0fb1c7cd6194b38a8d2f297e9a8e4e66ff66aa3d",
     strip_prefix = "abseil-cpp-67222ffc4c83d918ce8395aa61769eeb77df4c4d",
     urls = ["https://github.com/abseil/abseil-cpp/archive/67222ffc4c83d918ce8395aa61769eeb77df4c4d.tar.gz"],  # 2019-08-06
+)
+
+# gflags, required by Grpc & kythe.
+http_archive(
+    name = "com_github_gflags_gflags",
+    sha256 = "34af2f15cf7367513b352bdcd2493ab14ce43692d2dcd9dfc499492966c64dcf",
+    strip_prefix = "gflags-2.2.2",
+    urls = ["https://github.com/gflags/gflags/archive/v2.2.2.tar.gz"],
 )
 
 # proto_library, cc_proto_library, and java_proto_library rules implicitly
@@ -85,6 +93,23 @@ http_archive(
     sha256 = "b991e8b347b763f4b0e521b9687cdf8aebd6c5a831a6b6435b33fc11007e2c7f",
     strip_prefix = "GSL-1212beae777dba02c230ece8c0c0ec12790047ea",
     urls = ["https://github.com/microsoft/GSL/archive/1212beae777dba02c230ece8c0c0ec12790047ea.zip"],  # 2019-06-13
+)
+
+# glog, required by kythe.
+http_archive(
+    name = "com_github_google_glog",
+    sha256 = "f28359aeba12f30d73d9e4711ef356dc842886968112162bc73002645139c39c",
+    strip_prefix = "glog-0.4.0",
+    urls = ["https://github.com/google/glog/archive/v0.4.0.tar.gz"],
+)
+
+# rapidjson, required by kythe.
+http_archive(
+    name = "com_github_tencent_rapidjson",
+    build_file = "//third_party:rapidjson.BUILD",
+    sha256 = "8e00c38829d6785a2dfb951bb87c6974fa07dfe488aa5b25deec4b8bc0f6a3ab",
+    strip_prefix = "rapidjson-1.1.0",
+    url = "https://github.com/Tencent/rapidjson/archive/v1.1.0.zip",
 )
 
 #####
@@ -137,7 +162,3 @@ http_archive(
     strip_prefix = "kythe-b366059660304a27ae7775055ca168a4ecb55a72",
     urls = ["https://github.com/kythe/kythe/archive/b366059660304a27ae7775055ca168a4ecb55a72.zip"],
 )
-
-load("@io_kythe//:external.bzl", "kythe_dependencies")
-
-kythe_dependencies()
