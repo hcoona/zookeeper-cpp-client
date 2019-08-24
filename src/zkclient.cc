@@ -11,50 +11,6 @@ namespace zookeeper {
 // TODO(hcoona): Move them into configuration class.
 static constexpr int kReceiveTimeoutMs = 30000;
 
-std::string to_string(ErrorCode error_code) {
-  return zerror(static_cast<int>(error_code));
-}
-
-// Defined in zookeeper.c
-std::string to_string(State state) {
-  switch (state) {
-    case State::kClosed:
-      return "ZOO_CLOSED_STATE";
-    case State::kConnecting:
-      return "ZOO_CONNECTING_STATE";
-    case State::kAssociating:
-      return "ZOO_ASSOCIATING_STATE";
-    case State::kConnected:
-      return "ZOO_CONNECTED_STATE";
-    case State::kExpiredSession:
-      return "ZOO_EXPIRED_SESSION_STATE";
-    case State::kAuthFailed:
-      return "ZOO_AUTH_FAILED_STATE";
-  }
-  return "INVALID_STATE";
-}
-
-// Defined in zookeeper.c
-std::string to_string(WatchEventType type) {
-  switch (type) {
-    case WatchEventType::kError:
-      return "ZOO_ERROR_EVENT";
-    case WatchEventType::kCreated:
-      return "ZOO_CREATED_EVENT";
-    case WatchEventType::kDeleted:
-      return "ZOO_DELETED_EVENT";
-    case WatchEventType::kChanged:
-      return "ZOO_CHANGED_EVENT";
-    case WatchEventType::kChild:
-      return "ZOO_CHILD_EVENT";
-    case WatchEventType::kSession:
-      return "ZOO_SESSION_EVENT";
-    case WatchEventType::kNotWatching:
-      return "ZOO_NOTWATCHING_EVENT";
-  }
-  return "INVALID_EVENT";
-}
-
 static zhandle_t* to_zoo(void* handle) {
   return reinterpret_cast<zhandle_t*>(handle);
 }
@@ -110,10 +66,10 @@ State Client::state() const {
 }
 
 ErrorCode Client::CreateSync(string_view path, gsl::span<const gsl::byte> value,
-                             gsl::span<ACL> acl, CreateFlag flags,
+                             gsl::span<Acl> acl, CreateFlag flags,
                              std::string* created_path) {
   struct ACL_vector z_acls {
-    gsl::narrow_cast<int>(acl.size()), acl.data()
+    gsl::narrow_cast<int>(acl.size()), reinterpret_cast<::ACL*>(acl.data())
   };
   return static_cast<ErrorCode>(zoo_create(
       to_zoo(handle_), path.data(), reinterpret_cast<const char*>(value.data()),
