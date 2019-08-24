@@ -129,6 +129,44 @@ std::future<std::tuple<ErrorCode, std::string>> Client::CreateAsync(
   return promise->get_future();
 }
 
+ErrorCode Client::DeleteSync(string_view path, int version) {
+  return static_cast<ErrorCode>(
+      zoo_delete(to_zoo(handle_), path.data(), version));
+}
+
+ErrorCode Client::DeleteAsync(string_view path, int version,
+                              std::function<void(ErrorCode)> callback) {
+  auto holder = new Holder<std::function<void(ErrorCode)>>;
+  holder->t_ = std::move(callback);
+
+  ErrorCode error_code = static_cast<ErrorCode>(zoo_adelete(
+      to_zoo(handle_), path.data(), version,
+      [](int rc, const void* data) {
+        auto holder = (Holder<std::function<void(ErrorCode)>>*)data;
+        std::function<void(ErrorCode)> callback = std::move(holder->t_);
+        delete holder;
+
+        callback(static_cast<ErrorCode>(rc));
+      },
+      holder));
+  if (error_code != ErrorCode::kOk) {
+    delete holder;
+  }
+
+  return error_code;
+}
+
+std::future<ErrorCode> Client::DeleteAsync(string_view path, int version) {
+  auto promise = std::make_shared<std::promise<ErrorCode>>();
+  ErrorCode error_code = DeleteAsync(
+      path, version,
+      [promise](ErrorCode error_code) { promise->set_value(error_code); });
+  if (error_code != ErrorCode::kOk) {
+    promise->set_value(error_code);
+  }
+  return promise->get_future();
+}
+
 void Client::Close() {
   if (handle_) {
     ErrorCode error_code =

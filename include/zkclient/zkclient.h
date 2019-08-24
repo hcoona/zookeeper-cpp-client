@@ -39,6 +39,13 @@ class Client {
       string_view path, gsl::span<const gsl::byte> value, gsl::span<Acl> acl,
       CreateFlag flags);
 
+  ErrorCode DeleteSync(string_view path, int version);
+
+  ErrorCode DeleteAsync(string_view path, int version,
+                        std::function<void(ErrorCode)> callback);
+
+  std::future<ErrorCode> DeleteAsync(string_view path, int version);
+
  private:
   void Close();
   void Callback(WatchEventType type, State state, string_view path);
