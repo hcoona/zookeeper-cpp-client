@@ -9,6 +9,6 @@ cc_library(
         "-Wno-unused-variable",
         "-Wno-implicit-fallthrough",
     ],
-    visibility = ["//visibility:public"],
     includes = ["include"],
+    visibility = ["//visibility:public"],
 )

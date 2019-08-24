@@ -128,8 +128,8 @@ class Acl {
   Acl& operator=(Acl&& other) = default;
   ~Acl() = default;
 
-  static const gsl::span<Acl> kOpen;  // ZOO_OPEN_ACL_UNSAFE
-  static const gsl::span<Acl> kRead;  // ZOO_READ_ACL_UNSAFE
+  static const gsl::span<Acl> kOpen;        // ZOO_OPEN_ACL_UNSAFE
+  static const gsl::span<Acl> kRead;        // ZOO_READ_ACL_UNSAFE
   static const gsl::span<Acl> kCreatorAll;  // ZOO_CREATOR_ALL_ACL
 
   PermissionFlag permissions() const { return perms_; }
