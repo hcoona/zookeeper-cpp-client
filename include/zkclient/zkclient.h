@@ -1,7 +1,9 @@
 #pragma once
 
 #include <functional>
+#include <future>
 #include <string>
+#include <tuple>
 #include "gsl/gsl"
 #include "zkclient/zkadapter.h"
 
@@ -32,6 +34,10 @@ class Client {
   ErrorCode CreateAsync(string_view path, gsl::span<const gsl::byte> value,
                         gsl::span<Acl> acl, CreateFlag flags,
                         std::function<void(ErrorCode, string_view)> callback);
+
+  std::future<std::tuple<ErrorCode, std::string>> CreateAsync(
+      string_view path, gsl::span<const gsl::byte> value, gsl::span<Acl> acl,
+      CreateFlag flags);
 
  private:
   void Close();

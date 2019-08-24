@@ -1,5 +1,6 @@
 #include "zkclient/zkclient.h"
 
+#include <memory>
 #include <utility>
 #include "zookeeper.h"      // NOLINT
 #include "zookeeper_log.h"  // NOLINT
@@ -109,6 +110,23 @@ ErrorCode Client::CreateAsync(
   }
 
   return error_code;
+}
+
+std::future<std::tuple<ErrorCode, std::string>> Client::CreateAsync(
+    string_view path, gsl::span<const gsl::byte> value, gsl::span<Acl> acl,
+    CreateFlag flags) {
+  auto promise =
+      std::make_shared<std::promise<std::tuple<ErrorCode, std::string>>>();
+  ErrorCode error_code =
+      CreateAsync(path, value, acl, flags,
+                  [promise](ErrorCode error_code, string_view created_path) {
+                    promise->set_value(
+                        std::make_tuple(error_code, std::string(created_path)));
+                  });
+  if (error_code != ErrorCode::kOk) {
+    promise->set_value(std::make_tuple(error_code, std::string(path)));
+  }
+  return promise->get_future();
 }
 
 void Client::Close() {
