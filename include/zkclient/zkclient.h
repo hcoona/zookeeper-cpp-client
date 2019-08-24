@@ -31,7 +31,7 @@ class Client {
 
   ErrorCode CreateAsync(string_view path, gsl::span<const gsl::byte> value,
                         gsl::span<Acl> acl, CreateFlag flags,
-                        std::function<void(ErrorCode, std::string)> callback);
+                        std::function<void(ErrorCode, string_view)> callback);
 
  private:
   void Close();

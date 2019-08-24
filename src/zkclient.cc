@@ -84,8 +84,8 @@ ErrorCode Client::CreateSync(string_view path, gsl::span<const gsl::byte> value,
 
 ErrorCode Client::CreateAsync(
     string_view path, gsl::span<const gsl::byte> value, gsl::span<Acl> acl,
-    CreateFlag flags, std::function<void(ErrorCode, std::string)> callback) {
-  auto holder = new Holder<std::function<void(ErrorCode, std::string)>>;
+    CreateFlag flags, std::function<void(ErrorCode, string_view)> callback) {
+  auto holder = new Holder<std::function<void(ErrorCode, string_view)>>;
   holder->t_ = std::move(callback);
 
   struct ACL_vector z_acls {
@@ -96,8 +96,8 @@ ErrorCode Client::CreateAsync(
       value.size_bytes(), &z_acls, static_cast<int>(flags),
       [](int rc, const char* value, const void* data) {
         auto holder =
-            (Holder<std::function<void(ErrorCode, std::string)>>*)data;
-        std::function<void(ErrorCode, std::string)> callback =
+            (Holder<std::function<void(ErrorCode, string_view)>>*)data;
+        std::function<void(ErrorCode, string_view)> callback =
             std::move(holder->t_);
         delete holder;
 

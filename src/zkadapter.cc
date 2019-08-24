@@ -105,6 +105,10 @@ Id::Id(const Id& other) {
 }
 
 Id& Id::operator=(const Id& other) {
+  if (this == &other) {
+    return *this;
+  }
+
   if (scheme_ != nullptr) {
     delete scheme_;
   }
@@ -112,13 +116,21 @@ Id& Id::operator=(const Id& other) {
     delete id_;
   }
 
-  size_t scheme_length = std::strlen(other.scheme_);
-  scheme_ = new char[scheme_length + 1];
-  std::memcpy(scheme_, other.scheme_, scheme_length + 1);
+  if (other.scheme_ == nullptr) {
+    scheme_ = nullptr;
+  } else {
+    size_t scheme_length = std::strlen(other.scheme_);
+    scheme_ = new char[scheme_length + 1];
+    std::memcpy(scheme_, other.scheme_, scheme_length + 1);
+  }
 
-  size_t id_length = std::strlen(other.id_);
-  id_ = new char[id_length + 1];
-  std::memcpy(id_, other.id_, id_length + 1);
+  if (other.id_ == nullptr) {
+    id_ = nullptr;
+  } else {
+    size_t id_length = std::strlen(other.id_);
+    id_ = new char[id_length + 1];
+    std::memcpy(id_, other.id_, id_length + 1);
+  }
 
   return *this;
 }
@@ -132,6 +144,10 @@ Id::Id(Id&& other) {
 }
 
 Id& Id::operator=(Id&& other) {
+  if (this == &other) {
+    return *this;
+  }
+
   if (scheme_ != nullptr) {
     delete scheme_;
   }
