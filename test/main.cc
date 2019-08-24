@@ -6,7 +6,7 @@
 #include "gsl/gsl"
 #include "zkclient/zkclient.h"
 
-using namespace hcoona::zookeeper;
+using namespace hcoona::zookeeper;  // NOLINT
 
 int main(int argc, char** argv) {
   if (argc != 2) {
@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     path.resize(1024);
     ErrorCode error_code = client.CreateSync(
         "/zkclient_test", gsl::as_bytes(gsl::ensure_z("test_value")),
-        Acl::kCreatorAll, CreateFlag::kEphemeral, &path);
+        Acl::kRead, CreateFlag::kEphemeral, &path);
     if (error_code != ErrorCode::kOk) {
       std::cerr << "Failed to create zknode: /zkclient_test: "
                 << to_string(error_code) << std::endl;
@@ -30,9 +30,9 @@ int main(int argc, char** argv) {
     }
     std::cout << "Successfully created zknode: " << path << std::endl;
 
-    std::this_thread::sleep_for(std::chrono::seconds(20));
+    std::this_thread::sleep_for(std::chrono::seconds(5));
   }
 
-  std::this_thread::sleep_for(std::chrono::seconds(5));
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   return 0;
 }

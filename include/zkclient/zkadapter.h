@@ -109,7 +109,7 @@ class Id {
   static const Id kCurrentAuthenticated;  // ZOO_AUTH_IDS
 
   string_view scheme() const { return scheme_; }
-  string_view id() const { return id_; };
+  string_view id() const { return id_; }
 
  private:
   char* scheme_;
