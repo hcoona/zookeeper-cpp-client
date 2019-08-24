@@ -1,0 +1,14 @@
+cc_library(
+    name = "zkclient_public_headers",
+    hdrs = [
+        "zkadapter.h",
+        "zkclient.h",
+    ],
+    include_prefix = "zkclient",
+    strip_include_prefix = ".",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_microsoft_gsl//:gsl",
+        "@com_google_absl//absl/strings",
+    ],
+)

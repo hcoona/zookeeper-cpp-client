@@ -1,0 +1,12 @@
+cc_binary(
+    name = "test_main",
+    srcs = ["main.cc"],
+    copts = select({
+        "@bazel_tools//src/conditions:windows": ["/std:c++14"],
+        "//conditions:default": ["-std=c++14"],
+    }),
+    deps = [
+        "//src:zkclient",
+        "@com_github_microsoft_gsl//:gsl",
+    ],
+)

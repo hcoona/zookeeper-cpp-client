@@ -56,6 +56,14 @@ http_archive(
     urls = ["https://github.com/gflags/gflags/archive/v2.2.2.tar.gz"],
 )
 
+# gtest, required by Grpc.
+http_archive(
+    name = "com_google_googletest",
+    sha256 = "5aaa5d566517cae711e2a3505ea9a6438be1b37fcaae0ebcb96ccba9aa56f23a",
+    strip_prefix = "googletest-b4d4438df9479675a632b2f11125e57133822ece",
+    urls = ["https://github.com/google/googletest/archive/b4d4438df9479675a632b2f11125e57133822ece.zip"],  # 2018-07-16
+)
+
 # proto_library, cc_proto_library, and java_proto_library rules implicitly
 # depend on @com_google_protobuf for protoc and proto runtimes.
 http_archive(

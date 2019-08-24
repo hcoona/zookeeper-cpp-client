@@ -10,38 +10,3 @@ buildifier(
     name = "buildifier_lint",
     mode = "diff",
 )
-
-cc_library(
-    name = "zkclient",
-    srcs = [
-        "src/zkadapter.cc",
-        "src/zkclient.cc",
-    ],
-    hdrs = [
-        "include/zkclient/zkadapter.h",
-        "include/zkclient/zkclient.h",
-    ],
-    copts = select({
-        "@bazel_tools//src/conditions:windows": ["/std:c++14"],
-        "//conditions:default": ["-std=c++14"],
-    }),
-    strip_include_prefix = "include",
-    deps = [
-        "@com_github_microsoft_gsl//:gsl",
-        "@com_google_absl//absl/strings",
-        "@org_apache_zookeeper//:libzookeeper_mt",
-    ],
-)
-
-cc_binary(
-    name = "test_main",
-    srcs = ["test/main.cc"],
-    copts = select({
-        "@bazel_tools//src/conditions:windows": ["/std:c++14"],
-        "//conditions:default": ["-std=c++14"],
-    }),
-    deps = [
-        ":zkclient",
-        "@com_github_microsoft_gsl//:gsl",
-    ],
-)

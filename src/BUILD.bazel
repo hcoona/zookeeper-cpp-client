@@ -1,0 +1,16 @@
+cc_library(
+    name = "zkclient",
+    srcs = [
+        "zkadapter.cc",
+        "zkclient.cc",
+    ],
+    copts = select({
+        "@bazel_tools//src/conditions:windows": ["/std:c++14"],
+        "//conditions:default": ["-std=c++14"],
+    }),
+    visibility = ["//visibility:public"],
+    deps = [
+        "//include/zkclient:zkclient_public_headers",
+        "@org_apache_zookeeper//:libzookeeper_mt",
+    ],
+)
