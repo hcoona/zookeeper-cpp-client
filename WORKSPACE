@@ -163,7 +163,6 @@ http_archive(
 )
 
 # Generate compilation database for C++.
-# TODO(hcoona): Build kythe in a lighter way.
 http_archive(
     name = "io_kythe",
     sha256 = "4856b9b974ac771e5d8be9f14e7d98f71760ce85c9f20321a94c7ea94d4ab2ee",

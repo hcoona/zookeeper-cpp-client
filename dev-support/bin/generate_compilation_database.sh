@@ -25,6 +25,4 @@ sed -i '$s/,$//' compile_commands.json
 echo "]" >> compile_commands.json
 popd > /dev/null
 
-# TODO: Fix the base directory in compile_command.json
-
 cp $(python ${BAZELISK_PY} info execution_root)/compile_commands.json .
