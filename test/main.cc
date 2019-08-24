@@ -20,10 +20,9 @@ int main(int argc, char** argv) {
 
     std::string path;
     path.resize(1024);
-    Acl CREATE_ONLY_ACL[] = {{PermissionFlag::kCreate, Id::kAnyone}};
     ErrorCode error_code = client.CreateSync(
         "/zkclient_test", gsl::as_bytes(gsl::ensure_z("test_value")),
-        CREATE_ONLY_ACL, CreateFlag::kEphemeral, &path);
+        Acl::kCreatorAll, CreateFlag::kEphemeral, &path);
     if (error_code != ErrorCode::kOk) {
       std::cerr << "Failed to create zknode: /zkclient_test: "
                 << to_string(error_code) << std::endl;

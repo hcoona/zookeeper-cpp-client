@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-
 #include "gsl/gsl"
 #include "zkclient/zkadapter.h"
 

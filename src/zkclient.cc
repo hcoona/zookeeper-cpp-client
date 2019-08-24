@@ -1,7 +1,6 @@
 #include "zkclient/zkclient.h"
 
 #include <utility>
-
 #include "zookeeper.h"      // NOLINT
 #include "zookeeper_log.h"  // NOLINT
 

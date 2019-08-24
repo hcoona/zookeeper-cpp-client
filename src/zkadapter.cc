@@ -1,6 +1,7 @@
 #include "zkclient/zkadapter.h"
 
 #include <cstring>
+#include <utility>
 #include "zookeeper.h"  // NOLINT
 
 static_assert(sizeof(hcoona::zookeeper::Id) == sizeof(Id),
@@ -159,6 +160,21 @@ Id::~Id() {
 
 // Keep align with ZOO_ANYONE_ID_UNSAFE
 const Id Id::kAnyone{"world", "anyone"};
+// Keep align with ZOO_AUTH_IDS
+const Id Id::kCurrentAuthenticated{"auth", ""};
+
+Acl::Acl(PermissionFlag perms, Id id) : perms_(perms), id_(std::move(id)) {}
+
+// Keep align with ZOO_OPEN_ACL_UNSAFE
+static Acl kOpenAclUnsafeAcl[] = {{PermissionFlag::kAll, Id::kAnyone}};
+const gsl::span<Acl> Acl::kOpen = kOpenAclUnsafeAcl;
+// Keep align with ZOO_READ_ACL_UNSAFE
+static Acl kReadAclUnsafeAcl[] = {{PermissionFlag::kRead, Id::kAnyone}};
+const gsl::span<Acl> Acl::kRead = kReadAclUnsafeAcl;
+// Keep align with ZOO_CREATOR_ALL_ACL
+static Acl kCreatorAllAclAcl[] = {
+    {PermissionFlag::kAll, Id::kCurrentAuthenticated}};
+const gsl::span<Acl> Acl::kCreatorAll = kCreatorAllAclAcl;
 
 }  // namespace zookeeper
 }  // namespace hcoona
