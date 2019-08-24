@@ -5,6 +5,13 @@ This package provides a C++ client interface to Zookeeper server, just like link
 
 == Getting Started
 
-. Install link:https://github.com/bazelbuild/bazelisk[Bazelisk] 0.0.8 or above.
+. Install link:https://github.com/bazelbuild/bazelisk[Bazelisk] 1.0.0 or above.
 . Compile it with command `bazel build //...`
-. Check result at `bazel-bin/zkclient.a`
+. Check result at `bazel-bin/src/zkclient.a`
+
+== TODO
+
+. Publish `zkclient.so`
+. Wrap `struct Stat` (https://data-flair.training/blogs/zookeeper-data-model/)
+. Add `Result` helper for `ErrorCode` checking
+. Session reconnection
