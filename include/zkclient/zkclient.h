@@ -46,6 +46,8 @@ class Client {
 
   std::future<ErrorCode> DeleteAsync(string_view path, int version);
 
+  ErrorCode ExistsSync(string_view path, Stat* stat);
+
  private:
   void Close();
   void Callback(WatchEventType type, State state, string_view path);

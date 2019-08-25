@@ -46,6 +46,23 @@ int main(int argc, char** argv) {
     }
     std::cout << "Successfully created zknode: " << created_path << std::endl;
 
+    Stat stat;
+    error_code = client.ExistsSync(kAsyncPath, &stat);
+    if (error_code == ErrorCode::kOk) {
+      std::cout << "Path " << std::string(kAsyncPath)
+                << ": creation_transaction_id="
+                << stat.creation_transaction_id()
+                << ", creation_unix_epoch_millis="
+                << stat.creation_unix_epoch_millis()
+                << ", version=" << stat.version()
+                << ", ephemeral_owner=" << stat.ephemeral_owner()
+                << ", data_length=" << stat.data_length() << std::endl;
+    } else {
+      std::cout << "Path " << std::string(kAsyncPath)
+                << " does not exist, error_code=" << to_string(error_code)
+                << std::endl;
+    }
+
     std::future<ErrorCode> delete_future = client.DeleteAsync(kAsyncPath, -1);
     error_code = delete_future.get();
     if (error_code != ErrorCode::kOk) {

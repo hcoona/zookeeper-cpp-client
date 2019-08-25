@@ -170,6 +170,11 @@ std::future<ErrorCode> Client::DeleteAsync(string_view path, int version) {
   return promise->get_future();
 }
 
+ErrorCode Client::ExistsSync(string_view path, Stat* stat) {
+  return static_cast<ErrorCode>(
+      zoo_exists(to_zoo(handle_), path.data(), 0, to_zoo(stat)));
+}
+
 void Client::Close() {
   if (handle_) {
     ErrorCode error_code =
