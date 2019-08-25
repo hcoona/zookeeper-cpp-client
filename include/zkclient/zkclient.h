@@ -28,15 +28,15 @@ class Client {
   State state() const;
 
   ErrorCode CreateSync(string_view path, gsl::span<const gsl::byte> value,
-                       gsl::span<Acl> acl, CreateFlag flags,
+                       gsl::span<Acl> acls, CreateFlag flags,
                        std::string* created_path);
 
   ErrorCode CreateAsync(string_view path, gsl::span<const gsl::byte> value,
-                        gsl::span<Acl> acl, CreateFlag flags,
+                        gsl::span<Acl> acls, CreateFlag flags,
                         std::function<void(ErrorCode, string_view)> callback);
 
   std::future<std::tuple<ErrorCode, std::string>> CreateAsync(
-      string_view path, gsl::span<const gsl::byte> value, gsl::span<Acl> acl,
+      string_view path, gsl::span<const gsl::byte> value, gsl::span<Acl> acls,
       CreateFlag flags);
 
   ErrorCode DeleteSync(string_view path, int version);

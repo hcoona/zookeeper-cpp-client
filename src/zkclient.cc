@@ -15,6 +15,11 @@ static zhandle_t* to_zoo(void* handle) {
   return reinterpret_cast<zhandle_t*>(handle);
 }
 
+static ACL_vector to_zoo(gsl::span<Acl> acls) {
+  return {gsl::narrow_cast<int>(acls.size()),
+          reinterpret_cast<::ACL*>(acls.data())};
+}
+
 template <class T>
 class Holder {
  public:
@@ -72,11 +77,9 @@ State Client::state() const {
 }
 
 ErrorCode Client::CreateSync(string_view path, gsl::span<const gsl::byte> value,
-                             gsl::span<Acl> acl, CreateFlag flags,
+                             gsl::span<Acl> acls, CreateFlag flags,
                              std::string* created_path) {
-  struct ACL_vector z_acls {
-    gsl::narrow_cast<int>(acl.size()), reinterpret_cast<::ACL*>(acl.data())
-  };
+  struct ACL_vector z_acls = to_zoo(acls);
   return static_cast<ErrorCode>(zoo_create(
       to_zoo(handle_), path.data(), reinterpret_cast<const char*>(value.data()),
       value.size_bytes(), &z_acls, static_cast<int>(flags),
@@ -84,14 +87,12 @@ ErrorCode Client::CreateSync(string_view path, gsl::span<const gsl::byte> value,
 }
 
 ErrorCode Client::CreateAsync(
-    string_view path, gsl::span<const gsl::byte> value, gsl::span<Acl> acl,
+    string_view path, gsl::span<const gsl::byte> value, gsl::span<Acl> acls,
     CreateFlag flags, std::function<void(ErrorCode, string_view)> callback) {
   auto holder = new Holder<std::function<void(ErrorCode, string_view)>>;
   holder->t_ = std::move(callback);
 
-  struct ACL_vector z_acls {
-    gsl::narrow_cast<int>(acl.size()), reinterpret_cast<::ACL*>(acl.data())
-  };
+  struct ACL_vector z_acls = to_zoo(acls);
   ErrorCode error_code = static_cast<ErrorCode>(zoo_acreate(
       to_zoo(handle_), path.data(), reinterpret_cast<const char*>(value.data()),
       value.size_bytes(), &z_acls, static_cast<int>(flags),
@@ -113,12 +114,12 @@ ErrorCode Client::CreateAsync(
 }
 
 std::future<std::tuple<ErrorCode, std::string>> Client::CreateAsync(
-    string_view path, gsl::span<const gsl::byte> value, gsl::span<Acl> acl,
+    string_view path, gsl::span<const gsl::byte> value, gsl::span<Acl> acls,
     CreateFlag flags) {
   auto promise =
       std::make_shared<std::promise<std::tuple<ErrorCode, std::string>>>();
   ErrorCode error_code =
-      CreateAsync(path, value, acl, flags,
+      CreateAsync(path, value, acls, flags,
                   [promise](ErrorCode error_code, string_view created_path) {
                     promise->set_value(
                         std::make_tuple(error_code, std::string(created_path)));
