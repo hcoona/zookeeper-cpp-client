@@ -140,5 +140,42 @@ class Acl {
   Id id_;
 };
 
+// Must keep align with `struct Stat` in "zookeeper.jute.h"
+// Don't use virtual function
+class Stat {
+ public:
+  Stat() = default;
+  Stat(const Stat& other) = default;
+  Stat& operator=(const Stat& other) = default;
+  Stat(Stat&& other) = default;
+  Stat& operator=(Stat&& other) = default;
+  ~Stat() = default;
+
+  int64_t creation_transaction_id() const { return czxid_; }
+  int64_t last_modified_transaction_id() const { return mzxid_; }
+  int64_t creation_unix_epoch_millis() const { return ctime_; }
+  int64_t last_modified_unix_epoch_millis() const { return mtime_; }
+  int32_t version() const { return version_; }
+  int32_t children_version() const { return cversion_; }
+  int32_t acl_version() const { return aversion_; }
+  int64_t ephemeral_owner() const { return ephemeral_owner_; }
+  int32_t data_length() const { return data_length_; }
+  int32_t children_count() const { return num_children_; }
+  int64_t children_modified_transaction_id() const { return pzxid_; }
+
+ private:
+  int64_t czxid_;
+  int64_t mzxid_;
+  int64_t ctime_;
+  int64_t mtime_;
+  int32_t version_;
+  int32_t cversion_;
+  int32_t aversion_;
+  int64_t ephemeral_owner_;
+  int32_t data_length_;
+  int32_t num_children_;
+  int64_t pzxid_;
+};
+
 }  // namespace zookeeper
 }  // namespace hcoona

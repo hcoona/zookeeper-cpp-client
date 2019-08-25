@@ -20,6 +20,8 @@ static ACL_vector to_zoo(gsl::span<Acl> acls) {
           reinterpret_cast<::ACL*>(acls.data())};
 }
 
+static ::Stat* to_zoo(Stat* stat) { return reinterpret_cast<::Stat*>(stat); }
+
 template <class T>
 class Holder {
  public:
