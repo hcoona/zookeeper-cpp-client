@@ -3,6 +3,8 @@ Shuai Zhang <zhangshuai.ustc@gmail.com>
 
 This package provides a C++ client interface to Zookeeper server, just like link:https://github.com/apache/zookeeper/tree/master/zookeeper-client/zookeeper-client-c[the official C client interface].
 
+**Moved to link:https://github.com/hcoona/one/tree/master/zkclient[https://github.com/hcoona/one/tree/master/zkclient]**
+
 == Getting Started
 
 . Install link:https://github.com/bazelbuild/bazelisk[Bazelisk] 1.0.0 or above.
